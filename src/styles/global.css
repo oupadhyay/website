@@ -1,0 +1,148 @@
+/* ==========================================================================
+   global.css — Base resets, @font-face declarations, OKLCH color tokens,
+   and prose styles for the Ojasw Upadhyay personal website.
+   ========================================================================== */
+
+@import "tailwindcss";
+
+/* --- Font Faces --- */
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/geist-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/geist-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('/fonts/instrument-serif-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Ioskeley Mono';
+  src: url('/fonts/ioskeley-mono-regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Ioskeley Mono';
+  src: url('/fonts/ioskeley-mono-bold.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+
+/* --- OKLCH Color Tokens --- */
+:root {
+  /* Dark mode (default) */
+  --color-surface-0: oklch(15% 0.005 260);
+  --color-surface-1: oklch(20% 0.008 260);
+  --color-surface-2: oklch(25% 0.010 260);
+  --color-text-primary: oklch(95% 0.005 90);
+  --color-text-secondary: oklch(70% 0.005 90);
+  --color-text-muted: oklch(45% 0.005 90);
+  --color-border: oklch(25% 0.005 260);
+  --color-border-hover: oklch(35% 0.008 260);
+
+  /* Decoration colors — inline link underlines only */
+  --deco-orange: oklch(75% 0.16 55);
+  --deco-sky: oklch(75% 0.14 230);
+  --deco-rose: oklch(70% 0.17 15);
+  --deco-lime: oklch(80% 0.18 140);
+  --deco-purple: oklch(70% 0.15 300);
+  --deco-teal: oklch(75% 0.12 185);
+
+  /* Typography tokens */
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Ioskeley Mono', 'SF Mono', Consolas, monospace;
+
+  /* Layout tokens */
+  --content-width: 680px;
+  --section-gap: 4rem;
+  --card-gap: 1rem;
+
+  color-scheme: dark;
+}
+
+/* Light mode */
+[data-theme="light"] {
+  --color-surface-0: oklch(97% 0.005 90);
+  --color-surface-1: oklch(94% 0.005 90);
+  --color-surface-2: oklch(90% 0.008 90);
+  --color-text-primary: oklch(15% 0.005 260);
+  --color-text-secondary: oklch(35% 0.005 260);
+  --color-text-muted: oklch(55% 0.005 260);
+  --color-border: oklch(88% 0.005 90);
+  --color-border-hover: oklch(80% 0.008 90);
+
+  color-scheme: light;
+}
+
+/* Respect system preference when no manual toggle */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --color-surface-0: oklch(97% 0.005 90);
+    --color-surface-1: oklch(94% 0.005 90);
+    --color-surface-2: oklch(90% 0.008 90);
+    --color-text-primary: oklch(15% 0.005 260);
+    --color-text-secondary: oklch(35% 0.005 260);
+    --color-text-muted: oklch(55% 0.005 260);
+    --color-border: oklch(88% 0.005 90);
+    --color-border-hover: oklch(80% 0.008 90);
+
+    color-scheme: light;
+  }
+}
+
+/* --- Base Reset --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface-0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+/* --- Inline Link Decoration (chester.how pattern) --- */
+.inline-link {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--deco-color, var(--color-border));
+  transition: text-decoration-color 200ms ease;
+}
+.inline-link:hover {
+  text-decoration-color: var(--deco-color-hover, var(--color-text-muted));
+}
+
+/* --- Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
