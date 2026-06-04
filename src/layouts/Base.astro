@@ -1,0 +1,40 @@
+---
+// Base.astro — HTML shell with head metadata, font loading, and theme initialization.
+// All pages extend this layout.
+
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Software Engineer building at the intersection of AI, design, and intuitive interfaces.' } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Theme initialization — runs before paint to prevent FOUC -->
+    <script is:inline>
+      (function() {
+        const stored = localStorage.getItem('theme');
+        if (stored) {
+          document.documentElement.setAttribute('data-theme', stored);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <Nav />
+    <main class="mx-auto px-6 md:px-8 pt-12 pb-8" style={`max-width: var(--content-width)`}>
+      <slot />
+    </main>
+  </body>
+</html>
