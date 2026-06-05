@@ -1,0 +1,41 @@
+---
+// Card.astro — Tactile interactive card surface.
+// Adapted from chester.how's skeuomorphic shadows + jakub.kr's scale feedback.
+interface Props {
+  href?: string;
+  class?: string;
+}
+const { href, class: className } = Astro.props;
+---
+{href ? (
+  <a href={href} class:list={['card', className]}>
+    <slot />
+  </a>
+) : (
+  <div class:list={['card', className]}>
+    <slot />
+  </div>
+)}
+
+<style>
+  .card {
+    display: block;
+    background: var(--color-surface-1);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: background 200ms ease-out, border-color 200ms ease-out, box-shadow 200ms ease-out, scale 100ms ease-out;
+    text-decoration: none;
+    color: inherit;
+  }
+  .card:hover {
+    background: var(--color-surface-2);
+    border-color: var(--color-border-hover);
+    box-shadow:
+      0 0 0 1px var(--color-border-hover),
+      0 4px 12px oklch(0% 0 0 / 0.2);
+  }
+  .card:active {
+    scale: 0.97;
+  }
+</style>

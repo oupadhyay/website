@@ -1,6 +1,10 @@
 ---
 // index.astro — Home page with bio, featured projects, recent writing, and social links.
 import Base from '../layouts/Base.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import WritingEntry from '../components/WritingEntry.astro';
+import Footer from '../components/Footer.astro';
 ---
 <Base title="Ojasw Upadhyay">
   <section>
@@ -20,4 +24,34 @@ import Base from '../layouts/Base.astro';
       <a class="inline-link" style="--deco-color: var(--deco-lime)">Georgia Tech</a>.
     </p>
   </section>
+
+  <section style="margin-top: var(--section-gap)">
+    <SectionHeader label="Projects" />
+    <div class="grid grid-cols-1 sm:grid-cols-2" style="gap: var(--card-gap)">
+      <ProjectCard
+        title="Shard v2"
+        description="AI assistant designed to complement user workflows."
+        icon="🔮"
+        tags={["Rust", "Tauri", "TypeScript"]}
+        href="https://github.com/oupadhyay/shard-v2"
+      />
+      <ProjectCard
+        title="AI PI"
+        description="RAG-based conversational AI for the Georgia Tech Invention Studio."
+        icon="🧠"
+        tags={["Python", "RAG", "Gemma 3"]}
+      />
+    </div>
+  </section>
+
+  <section style="margin-top: var(--section-gap)">
+    <SectionHeader label="Writing" />
+    <div>
+      <WritingEntry title="Hello, World" date="Jun 01" href="/writing/hello-world" isNew={true} />
+      <WritingEntry title="Feasibility of an AI Assistant for Makerspaces" date="Mar 15" href="#" />
+      <WritingEntry title="LOTUS: Improving Transformer Efficiency" date="May 24" href="#" />
+    </div>
+  </section>
+
+  <Footer />
 </Base>

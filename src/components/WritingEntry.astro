@@ -1,0 +1,68 @@
+---
+// WritingEntry.astro — Timeline row for writing/research entries.
+// Adapted from perrera.com's timeline connector pattern.
+interface Props {
+  title: string;
+  date: string;
+  href: string;
+  isNew?: boolean;
+}
+const { title, date, href, isNew = false } = Astro.props;
+---
+<a href={href} class="writing-entry">
+  <span class="entry-title">{title}</span>
+  <span class="entry-connector"></span>
+  {isNew && <span class="entry-new">NEW</span>}
+  <span class="entry-date">{date}</span>
+</a>
+
+<style is:global>
+  .writing-entry {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    text-decoration: none;
+    color: inherit;
+    transition: background 200ms ease;
+    border-radius: 6px;
+    margin: 0 -0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  .writing-entry:hover {
+    background: var(--color-surface-1);
+  }
+  .entry-title {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+  }
+  .entry-connector {
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+    opacity: 0.15;
+    transition: opacity 500ms ease;
+  }
+  .writing-entry:hover .entry-connector {
+    opacity: 0.5;
+  }
+  .entry-new {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.05em;
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    border: 1px solid var(--deco-rose);
+    color: var(--deco-rose);
+  }
+  .entry-date {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+</style>

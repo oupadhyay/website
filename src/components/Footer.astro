@@ -1,0 +1,65 @@
+---
+// Footer.astro — Minimal footer with social links and colophon.
+const links = [
+  { href: 'https://github.com/oupadhyay', label: 'GitHub' },
+  { href: 'https://scholar.google.com/citations?user=nPogjt0AAAAJ', label: 'Scholar' },
+  { href: 'https://linkedin.com/in/ojasw', label: 'LinkedIn' },
+];
+---
+<footer class="footer">
+  <div class="footer-links">
+    {links.map((link, i) => (
+      <>
+        <a href={link.href} target="_blank" rel="noopener noreferrer" class="footer-link">
+          {link.label}<span class="arrow">↗</span>
+        </a>
+        {i < links.length - 1 && <span class="footer-sep">·</span>}
+      </>
+    ))}
+  </div>
+  <p class="colophon">Built with Astro. Set in Instrument Serif, Geist & Ioskeley Mono.</p>
+</footer>
+
+<style is:global>
+  .footer {
+    margin-top: var(--section-gap);
+    padding: 2rem 0;
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+  }
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .footer-link {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+  .footer-link:hover {
+    color: var(--color-text-primary);
+  }
+  .footer-link .arrow {
+    display: inline-block;
+    font-size: 0.7em;
+    margin-left: 0.15em;
+    transition: transform 200ms ease;
+  }
+  .footer-link:hover .arrow {
+    transform: translate(2px, -2px);
+  }
+  .footer-sep {
+    color: var(--color-text-muted);
+    opacity: 0.3;
+  }
+  .colophon {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    opacity: 0.5;
+  }
+</style>

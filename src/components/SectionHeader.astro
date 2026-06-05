@@ -1,0 +1,34 @@
+---
+// SectionHeader.astro — Uppercase monospace label with horizontal rule.
+// Adapted from alexanderobenauer.com's category markers.
+interface Props {
+  label: string;
+}
+const { label } = Astro.props;
+---
+<div class="section-header">
+  <span class="section-label">{label}</span>
+  <div class="section-rule"></div>
+</div>
+
+<style>
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+  .section-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+  }
+</style>
