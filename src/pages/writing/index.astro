@@ -13,9 +13,11 @@ const sorted = allPosts.sort((a, b) =>
   new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
 
-// Group by year
+// Group by year. Use UTC so a date like "2025-06-01" (parsed as UTC midnight)
+// is not shifted into the previous day/year when the build runs in a timezone
+// behind UTC.
 const byYear = sorted.reduce((acc, post) => {
-  const year = new Date(post.data.date).getFullYear().toString();
+  const year = new Date(post.data.date).getUTCFullYear().toString();
   if (!acc[year]) acc[year] = [];
   acc[year].push(post);
   return acc;
@@ -23,11 +25,11 @@ const byYear = sorted.reduce((acc, post) => {
 
 const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
 
-// Format date as "Mon 'YY"
+// Format date as "Mon 'YY" in UTC to match the authored date exactly.
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
-  const month = d.toLocaleDateString('en-US', { month: 'short' });
-  const year = d.getFullYear().toString().slice(2);
+  const month = d.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' });
+  const year = d.getUTCFullYear().toString().slice(2);
   return `${month} '${year}`;
 }
 

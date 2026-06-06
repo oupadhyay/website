@@ -23,7 +23,7 @@ import Base from './Base.astro';
         {title}
       </h1>
       <time style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-muted)">
-        {new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+        {new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}
       </time>
     </header>
     <div class="prose">
