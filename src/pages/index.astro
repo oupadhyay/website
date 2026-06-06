@@ -6,8 +6,20 @@ import ProjectCard from '../components/ProjectCard.astro';
 import WritingEntry from '../components/WritingEntry.astro';
 import Footer from '../components/Footer.astro';
 import { projects } from '../data/projects';
+import { getCollection } from 'astro:content';
 
-const featuredProjects = projects.slice(0, 4);
+// Pull writing/papers from the same content collection the /writing page uses,
+// so both views stay consistent. Show the most recent few here.
+const recentWriting = (await getCollection('writing'))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 4);
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  const month = d.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' });
+  const year = d.getUTCFullYear().toString().slice(2);
+  return `${month} '${year}`;
+}
 ---
 <Base title="Ojasw Upadhyay">
   <!-- Bio -->
@@ -33,7 +45,7 @@ const featuredProjects = projects.slice(0, 4);
   <section style="margin-top: var(--section-gap)">
     <SectionHeader label="Projects" />
     <div class="grid grid-cols-1 sm:grid-cols-2" style="gap: var(--card-gap)">
-      {featuredProjects.map(project => (
+      {projects.map(project => (
         <ProjectCard
           title={project.title}
           description={project.description}
@@ -49,9 +61,15 @@ const featuredProjects = projects.slice(0, 4);
   <section style="margin-top: var(--section-gap)">
     <SectionHeader label="Writing" />
     <div>
-      <WritingEntry title="Hello, World" date="Jun '25" href="/writing/hello-world" isNew={true} />
-      <WritingEntry title="LOTUS: Improving Transformer Efficiency with Sparsity" date="May '24" href="https://arxiv.org/abs/2405.00906" />
-      <WritingEntry title="SynLexLM: Scaling Legal LLMs with Synthetic Data" date="Apr '25" href="https://arxiv.org/abs/2504.18762" />
+      {recentWriting.map(post => (
+        <WritingEntry
+          title={post.data.title}
+          date={formatDate(post.data.date)}
+          href={post.data.url ?? `/writing/${post.id}`}
+          external={!!post.data.url}
+          tags={post.data.tags ?? []}
+        />
+      ))}
     </div>
   </section>
 

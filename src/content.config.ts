@@ -9,6 +9,11 @@ const writing = defineCollection({
     title: z.string(),
     date: z.string(),
     description: z.string().optional(),
+    // External link (e.g. a published paper). When set, the entry links out
+    // instead of rendering an internal /writing/<slug> page.
+    url: z.string().optional(),
+    // Display tags (e.g. "Paper", "Award", "New"). See Tag.astro for colors.
+    tags: z.array(z.string()).optional(),
   }),
 });
 
