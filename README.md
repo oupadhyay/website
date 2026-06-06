@@ -1,43 +1,118 @@
-# Astro Starter Kit: Minimal
+# ojasw.dev
 
-```sh
-pnpm create astro@latest -- --template minimal
-```
+Ojasw Upadhyay's personal website — a static, dark-mode-first digital garden.
+Built with [Astro](https://astro.build) + [Tailwind CSS v4](https://tailwindcss.com),
+typeset in Instrument Serif, Geist, and Ioskeley Mono. Ships zero JS except a tiny
+theme-toggle island and Astro's view-transition router (Mermaid loads only on pages
+that contain a diagram).
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+See [`docs/walkthrough.md`](docs/walkthrough.md) for an architecture overview.
 
-## 🚀 Project Structure
+## Tech stack
 
-Inside of your Astro project, you'll see the following folders and files:
+- **Astro v6** — static site generation, content collections, view transitions
+- **Tailwind CSS v4** — via `@tailwindcss/vite`
+- **OKLCH** design tokens with dark/light themes (see `src/styles/global.css`)
+- **MDX** content with **KaTeX** math and client-rendered **Mermaid** diagrams
+
+## Project structure
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+src/
+├── components/      # Tag, Card, Badge, ProjectCard, WritingEntry, Nav, Footer, …
+├── content/
+│   └── writing/     # .md / .mdx posts + papers (the "writing" collection)
+├── data/projects.ts # typed project list (home Projects section)
+├── layouts/         # Base.astro (shell), Post.astro (prose + math/mermaid)
+├── lib/             # rehype-mermaid-pre.mjs (mermaid → <pre class="mermaid">)
+├── pages/           # index.astro, writing/index.astro, writing/[...slug].astro
+└── styles/global.css
+public/               # fonts, favicon, CNAME
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Commands
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Run from the project root (package manager: **pnpm**):
 
-Any static assets, like images, can be placed in the `public/` directory.
+| Command         | Action                                       |
+| :-------------- | :------------------------------------------- |
+| `pnpm install`  | Install dependencies                         |
+| `pnpm dev`      | Start the dev server at `localhost:4321`     |
+| `pnpm build`    | Build the production site to `./dist/`       |
+| `pnpm preview`  | Preview the production build locally         |
+| `pnpm astro ...`| Run Astro CLI commands (e.g. `astro check`)  |
 
-## 🧞 Commands
+## Authoring content
 
-All commands are run from the root of the project, from a terminal:
+### Writing & papers
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+Each entry is a Markdown/MDX file in `src/content/writing/` with frontmatter:
 
-## 👀 Want to learn more?
+```yaml
+---
+title: "Post title"
+date: "2026-06-01"          # YYYY-MM-DD (rendered in UTC)
+description: "Optional summary."
+url: "https://…"            # optional — external link (e.g. a paper);
+                            # such entries link out and get no internal page
+tags: ["Paper", "Award"]    # optional — see the tag system below
+---
+```
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### Tag system
+
+`src/components/Tag.astro` maps tag labels to decoration colors (override with `color`):
+
+| Label | Color |
+| :--- | :--- |
+| `Paper` | sky |
+| `Award` / `Honorable Mention` | lime |
+| `New` | rose |
+| `Note` | teal |
+| `Coming Soon` / `Stealth` | purple |
+
+### Math & diagrams (MDX)
+
+In `.mdx` posts (and `.md`), use KaTeX math and Mermaid diagrams:
+
+````markdown
+Inline $e^{i\pi} + 1 = 0$ and display:
+
+$$
+\int_0^\infty e^{-x}\,dx = 1
+$$
+
+```mermaid
+flowchart LR
+  A --> B
+```
+````
+
+Math renders to static HTML at build time. Mermaid is rendered on the client and the
+library is lazy-loaded only on pages that contain a diagram.
+
+## Deployment
+
+The site is static (`pnpm build` → `dist/`) and host-agnostic.
+
+### GitHub Pages (configured)
+
+`.github/workflows/deploy.yml` builds and deploys on every push to `main`.
+
+1. Push to `github.com/oupadhyay/website`.
+2. Repo **Settings → Pages → Build and deployment → Source: "GitHub Actions"**.
+3. **Custom domain:** `public/CNAME` contains `ojasw.dev`. Point DNS at GitHub Pages:
+   - Apex `ojasw.dev`: `A` records → `185.199.108.153`, `185.199.109.153`,
+     `185.199.110.153`, `185.199.111.153` (and the matching `AAAA` records).
+   - `www`: `CNAME` → `oupadhyay.github.io`.
+   - Then enable **Enforce HTTPS** in Settings → Pages.
+
+> Without a custom domain the site would live at `oupadhyay.github.io/website/`,
+> which requires setting `base: '/website'` in `astro.config.mjs` (and would change
+> all root-absolute links). The apex domain keeps `base: '/'`.
+
+### Vercel (alternative)
+
+Import the repo at [vercel.com](https://vercel.com) — Astro and pnpm are auto-detected
+(build `pnpm build`, output `dist/`). Add the custom domain in the Vercel dashboard and
+point DNS at Vercel. The GitHub Pages workflow and `CNAME` file are harmless here.
