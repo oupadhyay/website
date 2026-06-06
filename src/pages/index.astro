@@ -1,56 +1,70 @@
 ---
-// index.astro — Home page with bio, featured projects, recent writing, and social links.
+// index.astro — Home page: bio, featured projects, recent writing, elsewhere links, footer.
 import Base from '../layouts/Base.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import WritingEntry from '../components/WritingEntry.astro';
 import Footer from '../components/Footer.astro';
+import { projects } from '../data/projects';
+
+const featuredProjects = projects.slice(0, 4);
 ---
 <Base title="Ojasw Upadhyay">
+  <!-- Bio -->
   <section>
-    <h1 class="text-2xl mb-1" style="font-family: var(--font-serif); color: var(--color-text-primary); letter-spacing: -0.025em; line-height: 1.3">
+    <h1 style="font-family: var(--font-serif); color: var(--color-text-primary); font-size: 1.875rem; letter-spacing: -0.025em; line-height: 1.3; margin-bottom: 0.25rem">
       Ojasw Upadhyay
     </h1>
-    <p class="text-sm mb-6" style="font-family: var(--font-mono); color: var(--color-text-muted)">
+    <p style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 1.5rem">
       Software Engineer at YouTube · Georgia Tech '25
     </p>
-    <p>
+    <p style="margin-bottom: 0">
       I build things at the intersection of AI, design, and intuitive interfaces.
       Currently working on AI Dubbing at
-      <a class="inline-link" style="--deco-color: var(--deco-orange)">YouTube</a>.
+      <a class="inline-link" href="https://youtube.com" style="--deco-color: var(--deco-orange)">YouTube</a>.
       Previously: two internships at
-      <a class="inline-link" style="--deco-color: var(--deco-orange)">Google</a>,
-      makerspace AI safety research at
-      <a class="inline-link" style="--deco-color: var(--deco-lime)">Georgia Tech</a>.
+      <a class="inline-link" href="https://google.com" style="--deco-color: var(--deco-orange)">Google</a>,
+      and AI safety research at
+      <a class="inline-link" href="https://gatech.edu" style="--deco-color: var(--deco-lime)">Georgia Tech</a>.
     </p>
   </section>
 
+  <!-- Projects -->
   <section style="margin-top: var(--section-gap)">
     <SectionHeader label="Projects" />
     <div class="grid grid-cols-1 sm:grid-cols-2" style="gap: var(--card-gap)">
-      <ProjectCard
-        title="Shard v2"
-        description="AI assistant designed to complement user workflows."
-        icon="🔮"
-        tags={["Rust", "Tauri", "TypeScript"]}
-        href="https://github.com/oupadhyay/shard-v2"
-      />
-      <ProjectCard
-        title="AI PI"
-        description="RAG-based conversational AI for the Georgia Tech Invention Studio."
-        icon="🧠"
-        tags={["Python", "RAG", "Gemma 3"]}
-      />
+      {featuredProjects.map(project => (
+        <ProjectCard
+          title={project.title}
+          description={project.description}
+          href={project.href}
+          icon={project.icon}
+          tags={project.tags}
+        />
+      ))}
     </div>
   </section>
 
+  <!-- Writing -->
   <section style="margin-top: var(--section-gap)">
     <SectionHeader label="Writing" />
     <div>
-      <WritingEntry title="Hello, World" date="Jun 01" href="/writing/hello-world" isNew={true} />
-      <WritingEntry title="Feasibility of an AI Assistant for Makerspaces" date="Mar 15" href="#" />
-      <WritingEntry title="LOTUS: Improving Transformer Efficiency" date="May 24" href="#" />
+      <WritingEntry title="Hello, World" date="Jun '25" href="/writing/hello-world" isNew={true} />
+      <WritingEntry title="LOTUS: Improving Transformer Efficiency with Sparsity" date="May '24" href="https://arxiv.org/abs/2405.00906" />
+      <WritingEntry title="SynLexLM: Scaling Legal LLMs with Synthetic Data" date="Apr '25" href="https://arxiv.org/abs/2504.18762" />
     </div>
+  </section>
+
+  <!-- Elsewhere -->
+  <section style="margin-top: var(--section-gap)">
+    <SectionHeader label="Elsewhere" />
+    <p>
+      Find me on
+      <a class="inline-link" href="https://github.com/oupadhyay" target="_blank" rel="noopener noreferrer" style="--deco-color: var(--deco-purple)">GitHub</a>,
+      <a class="inline-link" href="https://scholar.google.com/citations?user=nPogjt0AAAAJ" target="_blank" rel="noopener noreferrer" style="--deco-color: var(--deco-lime)">Google Scholar</a>,
+      and
+      <a class="inline-link" href="https://linkedin.com/in/ojasw" target="_blank" rel="noopener noreferrer" style="--deco-color: var(--deco-sky)">LinkedIn</a>.
+    </p>
   </section>
 
   <Footer />
