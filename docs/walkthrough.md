@@ -8,14 +8,26 @@ island and Astro's view-transition router.
 
 | Route | Source | Description |
 | :--- | :--- | :--- |
-| `/` | [src/pages/index.astro](file:///Users/oupadhyay/Downloads/projects/website/src/pages/index.astro) | Bio, featured projects, recent writing, elsewhere links, footer |
-| `/projects` | [src/pages/projects.astro](file:///Users/oupadhyay/Downloads/projects/website/src/pages/projects.astro) | Responsive 2-col card grid (1-col on mobile) |
-| `/writing` | [src/pages/writing/index.astro](file:///Users/oupadhyay/Downloads/projects/website/src/pages/writing/index.astro) | Year-grouped timeline of posts |
-| `/writing/[slug]` | [src/pages/writing/[...slug].astro](file:///Users/oupadhyay/Downloads/projects/website/src/pages/writing/%5B...slug%5D.astro) | Individual post via [Post.astro](file:///Users/oupadhyay/Downloads/projects/website/src/layouts/Post.astro) prose layout |
+| `/` | [src/pages/index.astro](file:///Users/oupadhyay/Downloads/projects/website/src/pages/index.astro) | Bio, projects, recent writing, elsewhere links, footer |
+| `/writing` | [src/pages/writing/index.astro](file:///Users/oupadhyay/Downloads/projects/website/src/pages/writing/index.astro) | Year-grouped timeline of posts + papers |
+| `/writing/[slug]` | [src/pages/writing/[...slug].astro](file:///Users/oupadhyay/Downloads/projects/website/src/pages/writing/%5B...slug%5D.astro) | Individual internal post via [Post.astro](file:///Users/oupadhyay/Downloads/projects/website/src/layouts/Post.astro) prose layout |
 
 Content comes from [content collections](file:///Users/oupadhyay/Downloads/projects/website/src/content.config.ts)
 (Markdown under `src/content/writing/`) and a typed
 [projects data module](file:///Users/oupadhyay/Downloads/projects/website/src/data/projects.ts).
+The home Writing list reads from the same collection as `/writing`, so they stay in sync.
+
+## Writing entries & the tag system
+
+Each writing entry is a Markdown file with `title`, `date`, optional `description`,
+optional `url` (external link — e.g. a published paper; these skip internal page
+generation and open in a new tab), and optional `tags`. [Tag.astro](file:///Users/oupadhyay/Downloads/projects/website/src/components/Tag.astro)
+maps tag labels to decoration colors: `Paper` (sky), `Award` (lime), `New` (rose),
+`Note` (teal), `Coming Soon`/`Stealth` (purple); pass `color` to override.
+
+Published papers (LOTUS, SynLexLM, AI PI) live here as external `Paper` entries —
+AI PI also carries an `Award` tag for its ISAM 2025 Honorable Mention. Projects are
+reserved for current/ongoing work (Shard v2 + an upcoming stealth project).
 
 ## Design system
 
