@@ -1,18 +1,26 @@
 ---
 // WritingEntry.astro — Timeline row for writing/research entries.
 // Adapted from perrera.com's timeline connector pattern.
+import Tag from './Tag.astro';
+
 interface Props {
   title: string;
   date: string;
   href: string;
-  isNew?: boolean;
+  external?: boolean;
+  tags?: string[];
 }
-const { title, date, href, isNew = false } = Astro.props;
+const { title, date, href, external = false, tags = [] } = Astro.props;
+const extraProps = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
 ---
-<a href={href} class="writing-entry">
-  <span class="entry-title">{title}</span>
+<a href={href} class="writing-entry" {...extraProps}>
+  <span class="entry-title">{title}{external && <span class="entry-arrow">↗</span>}</span>
   <span class="entry-connector"></span>
-  {isNew && <span class="entry-new">NEW</span>}
+  {tags.length > 0 && (
+    <span class="entry-tags">
+      {tags.map((tag) => <Tag label={tag} />)}
+    </span>
+  )}
   <span class="entry-date">{date}</span>
 </a>
 
@@ -38,7 +46,16 @@ const { title, date, href, isNew = false } = Astro.props;
     font-weight: 500;
     font-size: 0.875rem;
     color: var(--color-text-primary);
-    white-space: nowrap;
+  }
+  .entry-arrow {
+    display: inline-block;
+    font-size: 0.7em;
+    margin-left: 0.2em;
+    color: var(--color-text-muted);
+    transition: transform 200ms ease;
+  }
+  .writing-entry:hover .entry-arrow {
+    transform: translate(2px, -2px);
   }
   .entry-connector {
     flex: 1;
@@ -46,18 +63,15 @@ const { title, date, href, isNew = false } = Astro.props;
     background: var(--color-border);
     opacity: 0.15;
     transition: opacity 500ms ease;
+    min-width: 1rem;
   }
   .writing-entry:hover .entry-connector {
     opacity: 0.5;
   }
-  .entry-new {
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    letter-spacing: 0.05em;
-    padding: 0.1rem 0.35rem;
-    border-radius: 3px;
-    border: 1px solid var(--deco-rose);
-    color: var(--deco-rose);
+  .entry-tags {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
   }
   .entry-date {
     font-family: var(--font-mono);

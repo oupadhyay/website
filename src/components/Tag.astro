@@ -1,0 +1,39 @@
+---
+// Tag.astro — Small colored pill for labeling entries (Paper, Award, New, …).
+// The label is matched (case-insensitively) to a decoration color; pass an
+// explicit `color` to override. Used by WritingEntry and anywhere a compact
+// status/category marker is needed.
+interface Props {
+  label: string;
+  color?: string;
+}
+const { label, color } = Astro.props;
+
+const colorMap: Record<string, string> = {
+  paper: 'var(--deco-sky)',
+  award: 'var(--deco-lime)',
+  'honorable mention': 'var(--deco-lime)',
+  new: 'var(--deco-rose)',
+  note: 'var(--deco-teal)',
+  'coming soon': 'var(--deco-purple)',
+  stealth: 'var(--deco-purple)',
+};
+
+const resolved = color ?? colorMap[label.toLowerCase()] ?? 'var(--color-text-muted)';
+---
+<span class="tag" style={`--tag-color: ${resolved}`}>{label}</span>
+
+<style>
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    border: 1px solid var(--tag-color);
+    color: var(--tag-color);
+    white-space: nowrap;
+    line-height: 1.4;
+  }
+</style>
