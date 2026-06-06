@@ -10,6 +10,7 @@ interface Props {
 
 const { title, date, description } = Astro.props;
 import Base from './Base.astro';
+import 'katex/dist/katex.min.css';
 ---
 <Base title={`${title} — Ojasw Upadhyay`} description={description}>
   <article>
@@ -112,4 +113,38 @@ import Base from './Base.astro';
     border-top: 1px solid var(--color-border);
     margin: 2rem 0;
   }
+  /* KaTeX display math: allow horizontal scroll on overflow */
+  .prose .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.25rem 0;
+    margin: 1.5rem 0;
+  }
+  /* Mermaid diagrams render client-side into this block */
+  .prose pre.mermaid {
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: center;
+    margin: 1.5rem 0;
+    /* Hide raw diagram source until mermaid renders it */
+    color: transparent;
+  }
+  .prose pre.mermaid[data-processed] {
+    color: inherit;
+  }
 </style>
+
+<script>
+  // Lazily render Mermaid diagrams only on pages that contain them, so the
+  // ~500KB library never loads elsewhere. Re-runs after view transitions.
+  async function renderMermaid() {
+    const nodes = document.querySelectorAll<HTMLElement>('pre.mermaid:not([data-processed])');
+    if (nodes.length === 0) return;
+    const { default: mermaid } = await import('mermaid');
+    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'neutral' : 'dark';
+    mermaid.initialize({ startOnLoad: false, theme, securityLevel: 'strict' });
+    await mermaid.run({ nodes });
+  }
+  document.addEventListener('astro:page-load', renderMermaid);
+</script>
