@@ -4,6 +4,7 @@
 
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -20,6 +21,7 @@ const { title, description = 'Software Engineer building at the intersection of 
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <ClientRouter />
 
     <!-- Theme initialization — runs before paint to prevent FOUC -->
     <script is:inline>
