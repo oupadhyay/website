@@ -49,11 +49,19 @@
 </style>
 
 <script>
-  const toggle = document.getElementById('theme-toggle');
-  toggle?.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme');
-    const next = current === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-  });
+  // Event delegation on document so the handler survives the body swaps
+  // performed by Astro's ClientRouter (View Transitions). Binding directly to
+  // the button would break after the first client-side navigation, since the
+  // button element is replaced. The guard ensures we bind exactly once.
+  if (!(window as any).__themeToggleBound) {
+    (window as any).__themeToggleBound = true;
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement | null;
+      if (!target?.closest('#theme-toggle')) return;
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+  }
 </script>
