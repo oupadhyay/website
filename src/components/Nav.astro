@@ -6,14 +6,22 @@ const currentPath = Astro.url.pathname;
 
 const links = [
   { href: '/writing', label: 'Writing' },
-  { href: '/projects', label: 'Projects' },
 ];
+
+// On the home page the big serif name already serves as the hero, so we hide
+// the nav wordmark there to avoid showing the name twice. An empty span keeps
+// the flex `justify-between` layout (links/toggle stay right-aligned).
+const isHome = currentPath === '/';
 ---
 <nav class="sticky top-0 z-50 border-b" style={`border-color: var(--color-border); background: var(--color-surface-0)`}>
   <div class="mx-auto flex items-center justify-between px-6 md:px-8 py-3" style={`max-width: var(--content-width)`}>
-    <a href="/" class="text-lg no-underline" style={`font-family: var(--font-serif); color: var(--color-text-primary)`}>
-      Ojasw Upadhyay
-    </a>
+    {isHome ? (
+      <span></span>
+    ) : (
+      <a href="/" class="text-lg no-underline" style={`font-family: var(--font-serif); color: var(--color-text-primary)`}>
+        Ojasw Upadhyay
+      </a>
+    )}
     <div class="flex items-center gap-6">
       {links.map(link => (
         <a
