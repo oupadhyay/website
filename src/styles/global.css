@@ -101,13 +101,10 @@
 }
 
 /* --- Base Reset --- */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* NOTE: Tailwind v4's preflight (loaded via `@import "tailwindcss"`) already
+   applies `box-sizing: border-box; margin: 0; padding: 0` inside `@layer base`.
+   Do NOT add an unlayered universal reset here — unlayered rules win over
+   layered ones, so it would override utilities like `mx-auto` and `px-6`. */
 
 html {
   font-family: var(--font-sans);
