@@ -100,16 +100,22 @@ The site is static (`pnpm build` → `dist/`) and host-agnostic.
 `.github/workflows/deploy.yml` builds and deploys on every push to `main`.
 
 1. Push to `github.com/oupadhyay/website`.
-2. Repo **Settings → Pages → Build and deployment → Source: "GitHub Actions"**.
-3. **Custom domain:** `public/CNAME` contains `ojasw.dev`. Point DNS at GitHub Pages:
-   - Apex `ojasw.dev`: `A` records → `185.199.108.153`, `185.199.109.153`,
-     `185.199.110.153`, `185.199.111.153` (and the matching `AAAA` records).
+2. Repo **Settings → Pages → Build and deployment → Source: "GitHub Actions"**
+   (`build_type: workflow`). This must NOT be "Deploy from a branch", or GitHub's
+   legacy Jekyll builder runs and fails trying to parse `.astro` files as YAML.
+3. **Custom domain:** the canonical domain is `www.ojasw.dev` (`public/CNAME`).
+   DNS:
    - `www`: `CNAME` → `oupadhyay.github.io`.
-   - Then enable **Enforce HTTPS** in Settings → Pages.
+   - Apex `ojasw.dev`: redirect to `https://www.ojasw.dev` (registrar redirect),
+     or `A`/`AAAA` records → GitHub Pages IPs (`185.199.108–111.153`).
+   - Then enable **Enforce HTTPS** in Settings → Pages once the cert is issued.
 
+> The `CNAME` file (`www.ojasw.dev`) must match the domain configured in
+> Settings → Pages, or each deploy will fight the dashboard setting.
+>
 > Without a custom domain the site would live at `oupadhyay.github.io/website/`,
 > which requires setting `base: '/website'` in `astro.config.mjs` (and would change
-> all root-absolute links). The apex domain keeps `base: '/'`.
+> all root-absolute links). The custom domain keeps `base: '/'`.
 
 ### Vercel (alternative)
 

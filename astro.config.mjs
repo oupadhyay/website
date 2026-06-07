@@ -8,7 +8,7 @@ import rehypeKatex from 'rehype-katex';
 import rehypeMermaidPre from './src/lib/rehype-mermaid-pre.mjs';
 
 export default defineConfig({
-  site: 'https://ojasw.dev',
+  site: 'https://www.ojasw.dev',
   integrations: [mdx()],
   markdown: {
     // Skip Shiki highlighting for mermaid blocks so rehype-mermaid can
