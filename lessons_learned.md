@@ -9,5 +9,5 @@ Date,"Context","Mistake/Finding","Lesson/Action Item"
 2026-06-04,"Typographic analysis of Framer templates","Found ampersand typography overrides and custom wavy underline configurations styled outside Framer presets","Inspect inline style headers for custom CSS overrides that override compiled Framer token outputs"
 2026-06-04,"Orchestrating concurrent design research subagents","Spawning multiple subagents in a single task speeds up analysis, but requires passing absolute paths for screenshot storage to prevent file loss","Always pass fully qualified absolute paths for files and assets when delegating write actions to concurrent subagents"
 2026-06-04,"Visual audit of personal homepage mascottes","Dynamic components like SVG or text-based creatures can change states (e.g., awake vs. sleeping) depending on the local clock of the author's timezone","Check local timezone relative time when performing visual checks to identify time-dependent mascot animations"
+2026-06-06,"Increasing main heading visual hierarchy","Larger serif headers require tighter line-height to maintain typographic cohesion","Adjust line-height to 1.1 alongside font-size 3.75rem for large serif h1 tags"
 ```
-
