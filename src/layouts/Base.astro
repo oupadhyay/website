@@ -23,12 +23,22 @@ const { title, description = 'Software Engineer building at the intersection of 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <ClientRouter />
 
-    <!-- Theme initialization — runs before paint to prevent FOUC -->
+    <!-- Theme initialization — runs before paint to prevent FOUC.
+         Re-applied on astro:after-swap because the ClientRouter (View
+         Transitions) swaps the document and drops the runtime-set
+         data-theme attribute on <html>. -->
     <script is:inline>
       (function() {
-        const stored = localStorage.getItem('theme');
-        if (stored) {
-          document.documentElement.setAttribute('data-theme', stored);
+        function applyTheme() {
+          const stored = localStorage.getItem('theme');
+          if (stored) {
+            document.documentElement.setAttribute('data-theme', stored);
+          }
+        }
+        applyTheme();
+        if (!window.__themeSwapBound) {
+          window.__themeSwapBound = true;
+          document.addEventListener('astro:after-swap', applyTheme);
         }
       })();
     </script>
