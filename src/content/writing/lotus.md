@@ -4,4 +4,5 @@ date: "2024-05-02"
 description: "Improving transformer efficiency with sparsity pruning and data lottery tickets."
 url: "https://arxiv.org/abs/2405.00906"
 tags: ["Paper"]
+tagTooltips: { Paper: "Efficient Machine Learning, Spring 2024" }
 ---

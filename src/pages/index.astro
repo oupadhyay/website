@@ -67,6 +67,7 @@ function formatDate(dateStr: string): string {
           href={post.data.url ?? `/writing/${post.id}`}
           external={!!post.data.url}
           tags={post.data.tags ?? []}
+          tagTooltips={post.data.tagTooltips ?? {}}
         />
       ))}
     </div>

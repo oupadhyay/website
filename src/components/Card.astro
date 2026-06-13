@@ -21,19 +21,13 @@ const { href, class: className } = Astro.props;
   .card {
     display: block;
     background: transparent;
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
-    padding: 1.25rem;
-    transition: background 200ms ease-out, border-color 200ms ease-out, box-shadow 200ms ease-out, scale 100ms ease-out;
+    border: none;
+    padding: 0;
+    transition: opacity 200ms ease-out;
     text-decoration: none;
     color: inherit;
   }
-  .card:hover {
-    background: var(--color-surface-1);
-    border-color: var(--color-border-hover);
-    box-shadow: 0 0 0 1px var(--color-border-hover);
-  }
-  .card:active {
-    scale: 0.97;
+  a.card:hover {
+    opacity: 0.85;
   }
 </style>

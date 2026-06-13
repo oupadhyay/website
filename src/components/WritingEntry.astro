@@ -9,8 +9,9 @@ interface Props {
   href: string;
   external?: boolean;
   tags?: string[];
+  tagTooltips?: Record<string, string>;
 }
-const { title, date, href, external = false, tags = [] } = Astro.props;
+const { title, date, href, external = false, tags = [], tagTooltips = {} } = Astro.props;
 const extraProps = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
 ---
 <a href={href} class="writing-entry" {...extraProps}>
@@ -18,7 +19,7 @@ const extraProps = external ? { target: '_blank', rel: 'noopener noreferrer' } :
   <span class="entry-connector"></span>
   {tags.length > 0 && (
     <span class="entry-tags">
-      {tags.map((tag) => <Tag label={tag} />)}
+      {tags.map((tag) => <Tag label={tag} tooltip={tagTooltips[tag]} />)}
     </span>
   )}
   <span class="entry-date">{date}</span>

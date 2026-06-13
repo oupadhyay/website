@@ -14,6 +14,9 @@ const writing = defineCollection({
     url: z.string().optional(),
     // Display tags (e.g. "Paper", "Award", "New"). See Tag.astro for colors.
     tags: z.array(z.string()).optional(),
+    // Optional per-tag tooltip text, keyed by tag label (e.g. { Paper: "…" }).
+    // Overrides the default tooltips defined in Tag.astro.
+    tagTooltips: z.record(z.string()).optional(),
   }),
 });
 
