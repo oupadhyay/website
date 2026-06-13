@@ -11,9 +11,9 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    title: 'Shard v2',
+    title: 'Shard',
     description:
-      'Privacy-first AI assistant with a 5-tier memory system, autonomous tool calling, and multimodal vision — built as a native desktop app in Rust. Supports multiple LLM providers with automatic fallback, deep research mode, and on-demand persona loading.',
+      'Privacy-first AI desktop assistant with tiered memory, autonomous tool calling, and multimodal vision — built natively in Rust.',
     tags: ['Rust', 'Tauri', 'TypeScript'],
     href: 'https://github.com/oupadhyay/shard-v2',
     year: 2024,
