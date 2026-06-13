@@ -1,8 +1,6 @@
 ---
-// ProjectCard.astro — Extended card for the Projects page.
-// Icon + title + description + tech stack badges.
+// ProjectCard.astro — Project entry: title + description + muted tech stack line.
 import Card from './Card.astro';
-import Badge from './Badge.astro';
 
 interface Props {
   title: string;
@@ -16,9 +14,7 @@ const { title, description, href, tags = [] } = Astro.props;
   <h3 class="project-title">{title}</h3>
   <p class="project-desc">{description}</p>
   {tags.length > 0 && (
-    <div class="project-tags">
-      {tags.map(tag => <Badge label={tag} />)}
-    </div>
+    <p class="project-stack">{tags.join(' · ')}</p>
   )}
 </Card>
 
@@ -38,9 +34,10 @@ const { title, description, href, tags = [] } = Astro.props;
     line-height: 1.5;
     margin-bottom: 0.75rem;
   }
-  .project-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.375rem;
+  .project-stack {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    color: var(--color-text-muted);
   }
 </style>

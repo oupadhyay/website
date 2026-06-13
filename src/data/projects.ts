@@ -21,7 +21,7 @@ export const projects: Project[] = [
   {
     title: 'Stealth Project',
     description: 'Something new in the works. Details coming soon.',
-    tags: ['Coming Soon'],
+    tags: [],
     year: 2026,
   },
 ];
