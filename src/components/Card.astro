@@ -20,7 +20,7 @@ const { href, class: className } = Astro.props;
 <style>
   .card {
     display: block;
-    background: var(--color-surface-1);
+    background: transparent;
     border: 1px solid var(--color-border);
     border-radius: 12px;
     padding: 1.25rem;
@@ -29,11 +29,9 @@ const { href, class: className } = Astro.props;
     color: inherit;
   }
   .card:hover {
-    background: var(--color-surface-2);
+    background: var(--color-surface-1);
     border-color: var(--color-border-hover);
-    box-shadow:
-      0 0 0 1px var(--color-border-hover),
-      0 4px 12px oklch(0% 0 0 / 0.2);
+    box-shadow: 0 0 0 1px var(--color-border-hover);
   }
   .card:active {
     scale: 0.97;

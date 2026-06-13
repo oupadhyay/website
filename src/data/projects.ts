@@ -4,7 +4,6 @@
 export interface Project {
   title: string;
   description: string;
-  icon: string;
   tags: string[];
   href?: string;
   year: number;
@@ -13,8 +12,8 @@ export interface Project {
 export const projects: Project[] = [
   {
     title: 'Shard v2',
-    description: 'AI-powered desktop assistant designed to complement your workflow. Native app with system-level integrations.',
-    icon: '🔮',
+    description:
+      'Privacy-first AI assistant with a 5-tier memory system, autonomous tool calling, and multimodal vision — built as a native desktop app in Rust. Supports multiple LLM providers with automatic fallback, deep research mode, and on-demand persona loading.',
     tags: ['Rust', 'Tauri', 'TypeScript'],
     href: 'https://github.com/oupadhyay/shard-v2',
     year: 2024,
@@ -22,7 +21,6 @@ export const projects: Project[] = [
   {
     title: 'Stealth Project',
     description: 'Something new in the works. Details coming soon.',
-    icon: '🤫',
     tags: ['Coming Soon'],
     year: 2026,
   },

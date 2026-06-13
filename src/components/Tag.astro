@@ -1,30 +1,48 @@
 ---
-// Tag.astro — Small colored pill for labeling entries (Paper, Award, New, …).
-// The label is matched (case-insensitively) to a decoration color; pass an
-// explicit `color` to override. Used by WritingEntry and anywhere a compact
-// status/category marker is needed.
+// Tag.astro — Small colored pill for labeling entries (Paper, Award, …).
+// Colors carry meaning:
+//   Paper    → yellow  (written at Georgia Tech)
+//   Award    → purple  (special; shows a tooltip on hover/focus)
+//   Colophon → sky     (site notes / meta)
+//   New      → rose
+// Pass an explicit `color` and/or `tooltip` to override the defaults.
 interface Props {
   label: string;
   color?: string;
+  tooltip?: string;
 }
-const { label, color } = Astro.props;
+const { label, color, tooltip } = Astro.props;
 
 const colorMap: Record<string, string> = {
-  paper: 'var(--deco-sky)',
-  award: 'var(--deco-lime)',
-  'honorable mention': 'var(--deco-lime)',
+  paper: 'var(--deco-yellow)',
+  award: 'var(--deco-purple)',
+  colophon: 'var(--deco-sky)',
+  note: 'var(--deco-sky)',
   new: 'var(--deco-rose)',
-  note: 'var(--deco-teal)',
-  'coming soon': 'var(--deco-purple)',
-  stealth: 'var(--deco-purple)',
+  'coming soon': 'var(--deco-teal)',
+  stealth: 'var(--deco-teal)',
 };
 
-const resolved = color ?? colorMap[label.toLowerCase()] ?? 'var(--color-text-muted)';
+const tooltipMap: Record<string, string> = {
+  award: 'ISAM 2025 Honorable Mention',
+};
+
+const key = label.toLowerCase();
+const resolved = color ?? colorMap[key] ?? 'var(--color-text-muted)';
+const tip = tooltip ?? tooltipMap[key];
 ---
-<span class="tag" style={`--tag-color: ${resolved}`}>{label}</span>
+{tip ? (
+  <span class="tag has-tooltip" style={`--tag-color: ${resolved}`} tabindex="0">
+    {label}
+    <span class="tag-tooltip" role="tooltip">{tip}</span>
+  </span>
+) : (
+  <span class="tag" style={`--tag-color: ${resolved}`}>{label}</span>
+)}
 
 <style>
   .tag {
+    position: relative;
     font-family: var(--font-mono);
     font-size: 0.625rem;
     letter-spacing: 0.05em;
@@ -35,5 +53,43 @@ const resolved = color ?? colorMap[label.toLowerCase()] ?? 'var(--color-text-mut
     color: var(--tag-color);
     white-space: nowrap;
     line-height: 1.4;
+  }
+  .has-tooltip {
+    cursor: help;
+    outline: none;
+  }
+  .tag-tooltip {
+    position: absolute;
+    bottom: calc(100% + 0.4rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(2px);
+    z-index: 10;
+    padding: 0.3rem 0.5rem;
+    border-radius: 5px;
+    border: 1px solid var(--color-border-hover);
+    background: var(--color-surface-2);
+    color: var(--color-text-primary);
+    font-size: 0.6875rem;
+    letter-spacing: 0.01em;
+    text-transform: none;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms ease, transform 160ms ease;
+    box-shadow: 0 4px 12px oklch(0% 0 0 / 0.25);
+  }
+  .tag-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: var(--color-border-hover);
+  }
+  .has-tooltip:hover .tag-tooltip,
+  .has-tooltip:focus-visible .tag-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 </style>

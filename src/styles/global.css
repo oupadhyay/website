@@ -50,13 +50,15 @@
   --color-border: oklch(25% 0.005 260);
   --color-border-hover: oklch(35% 0.008 260);
 
-  /* Decoration colors — inline link underlines only */
+  /* Decoration colors — inline link underlines + tag accents */
   --deco-orange: oklch(75% 0.16 55);
   --deco-sky: oklch(75% 0.14 230);
   --deco-rose: oklch(70% 0.17 15);
   --deco-lime: oklch(80% 0.18 140);
   --deco-purple: oklch(70% 0.15 300);
   --deco-teal: oklch(75% 0.12 185);
+  --deco-red: oklch(64% 0.21 25);
+  --deco-yellow: oklch(85% 0.15 95);
 
   /* Typography tokens */
   --font-serif: 'Instrument Serif', Georgia, serif;

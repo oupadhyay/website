@@ -1,0 +1,389 @@
+ojasw.dev — Site Decisions, Inspirations, and Changelog
+=======================================================
+
+This is a personal record of every meaningful decision, aesthetic choice, and
+course correction that went into building this website. It exists because I want
+to remember *why* things look the way they do, not just what the code says.
+
+
+────────────────────────────────────────────────────────
+PHASE 0 — THE RESEARCH (June 4, 2026)
+────────────────────────────────────────────────────────
+
+Before writing any code, I audited seven websites that I genuinely admire as a
+user and as an engineer. The research was parallelized: seven subagents were
+spawned simultaneously, one per website, each running Playwright to capture
+high-resolution viewport screenshots and then fetching page content for
+structural analysis. All seven reports were written concurrently and compiled
+into a consolidated design analysis.
+
+Each site taught me something specific:
+
+  chester.how
+    The site that set the tone for the entire project. Chester uses colored
+    underlines on inline links — orange for work, sky for products, lime for
+    research — against an otherwise monochrome layout. The effect is like
+    finding colored pen annotations in a black-and-white notebook. I adopted
+    this pattern wholesale as the "decoration color" system.
+
+    Chester also uses skeuomorphic inset shadows on badges to make them look
+    physically pressed into the surface. That detail made it into my Badge
+    component, adapted for dark mode.
+
+  jakub.kr (and oklch.fyi)
+    Jakub's work convinced me to use OKLCH for the entire color system. He and
+    his tool oklch.fyi demonstrate why OKLCH maintains perceptual uniformity
+    across hues — a green and a blue at the same lightness value actually *look*
+    equally bright, which HSL cannot guarantee. Every color token on this site
+    is defined in OKLCH.
+
+    His card interactions are also where I got active:scale(0.97) — the subtle
+    scale-down when you click a card. It feels physical. Like pressing a real
+    button.
+
+  perrera.com
+    Eduardo Perrera's site is an Astro v5 + Tailwind v4 project, which validated
+    my stack choice. His timeline layout for writing entries — year labels on
+    the left, connector lines that glow on hover — became the direct ancestor
+    of my Writing page. The connector line opacity goes from 0.1 to 0.5 on
+    hover, creating a subtle pulse that guides the eye.
+
+  glenn.me
+    Glenn Hitchcock's site taught me about typographic restraint. His body text
+    sits in a 640px column. He overrides the ampersand character to render in
+    the font Ovo instead of his default Newsreader. That level of care made me
+    think harder about every font choice I made.
+
+  benji.org
+    Benji's site has a sleeping cat mascot that changes state based on the time
+    in LA. It's whimsical but technically interesting — he uses a real-time
+    clock component rendered with number-flow-react. His generous line height
+    (~1.9em) felt slightly loose to me, so I settled on 1.75 as a compromise
+    that still breathes.
+
+    Fun incident: the automated Playwright screenshot captured benji.org at
+    ~midnight LA time and got a near-blank 9KB image because the cat was
+    *asleep*. I had to manually provide a daytime screenshot to get the real
+    layout. This is now a logged lesson: always check timezone-relative time
+    when doing visual audits of sites with time-dependent content.
+
+  alexanderobenauer.com
+    Alexander's lab notebook layout uses vertical rotated gutter text for
+    category labels. Beautiful on a wide screen, but it doesn't translate to
+    a single-column layout. I adapted the concept into a horizontal section
+    header — uppercase monospace label with a horizontal rule extending to the
+    right edge.
+
+  poolside.ai
+    Poolside's dark mode swaps its accent from bright blue to cyan for
+    readability. That idea of adaptive color shifts between themes influenced
+    how I think about the decoration colors, though I ended up keeping them
+    constant across modes since they're only used for link underlines (small
+    surface area, high contrast either way).
+
+The full analysis lives in the design system doc:
+  → docs/plans/2026-06-04-design-system-design.md
+
+
+────────────────────────────────────────────────────────
+PHASE 1 — THE BIG DECISIONS (June 4, 2026)
+────────────────────────────────────────────────────────
+
+Stack: Astro v6.4 + Tailwind CSS v4
+  Why Astro? Content-first. Zero JS by default. Content collections for
+  Markdown. View transitions built in. I considered Next.js (half the
+  reference sites use it) but a personal site doesn't need React's runtime.
+  Astro ships HTML and CSS. That's it.
+
+  Why Tailwind v4? Native OKLCH support. No hex fallback gymnastics. The new
+  @layer system plays well with Astro's scoped styles.
+
+No Primary Accent Color (a three-step conversation)
+  This was the single most deliberate aesthetic decision, and it didn't land
+  in one shot. It evolved through three rounds of feedback:
+
+  Step 1: The initial design system doc included a primary accent color —
+  a saturated blue or teal. Standard tech portfolio energy.
+
+  Step 2: I asked for "dark grays / browns as primary accent instead of a
+  primary color." The design was revised to use warm espresso-brown OKLCH
+  tokens (oklch(55% 0.02 60) in dark mode, oklch(45% 0.03 55) in light).
+  The accent was now monochromatic, but it still existed as a distinct
+  --color-accent token used for badges, borders, and hover states.
+
+  Step 3: I refined further: "use colors as needed but not as primary,
+  accent, or background. see chester.how hover effects on text." This was
+  the breakthrough. Chester uses colored underlines on links — each link
+  gets its own hue — against an entirely neutral palette. Color is
+  *semantic* (tied to what the link points to), not *structural* (tied to
+  UI chrome). The --color-accent token was removed entirely. The base
+  palette became achromatic. Six decoration colors (orange, sky, rose,
+  lime, purple, teal) were added exclusively for inline link underlines.
+
+  The result: there is no --color-accent. No blue buttons. No orange
+  headers. Color appears *only* as inline link underline decorations.
+  If the palette is monochrome, typography, layout structure, and
+  interaction design have to carry all the visual weight. You can't lean
+  on a brand color as a crutch. Directly inspired by perrera.com's stone
+  palette and alexanderobenauer.com's restraint.
+
+  When color does appear (a lime underline under "Georgia Tech", an orange
+  one under "YouTube"), it hits harder precisely because everything around
+  it is neutral.
+
+OKLCH Color Tokens (Not HSL, Not Hex)
+  Every surface, text, and border color is defined in OKLCH. The hue channel
+  is 260 (cool blue-gray) for surfaces and 90 (warm yellow) for text, with
+  very low chroma (0.005-0.010). This creates a palette that reads as
+  "monochrome" but has just enough warmth to avoid feeling clinical.
+
+  Dark mode is the default. The warm off-white text (hue 90) against the
+  cool dark surfaces (hue 260) creates a subtle temperature contrast that
+  makes the dark theme feel inviting rather than sterile.
+
+Typography: Instrument Serif + Geist + Ioskeley Mono
+  Instrument Serif for headings — warmer and more contemporary than Crimson
+  Pro, more personality than Newsreader. It has subtle optical sizing that
+  makes it feel alive at large sizes without being decorative.
+
+  Geist for body text — Vercel's geometric sans-serif, optimized for screens.
+  benji.org uses it. Superior legibility at small sizes. Clean without being
+  cold.
+
+  Ioskeley Mono for metadata, dates, tags, and code — an open-source Iosevka
+  build that mimics Berkeley Mono's aesthetic. SIL OFL licensed (no licensing
+  friction). Several reference sites use Berkeley Mono but it's a paid font.
+  Ioskeley is the pragmatic choice.
+
+  (The initial design doc specified Berkeley Mono directly. I left an inline
+  comment on the design doc — "use open-source alternative: Ioskeley Mono
+  instead" — and it was swapped in. The name is a portmanteau of "Iosevka"
+  and "Berkeley." Same aesthetic at small sizes, zero licensing friction.)
+
+  (Side note: the initial Instrument Serif download from Google Fonts was a
+  broken 99-byte file that rendered as fallback Georgia. Every heading on the
+  site was rendering in plain Georgia for days until I caught it and manually
+  sourced the correct WOFF2 from the actual Google Fonts CDN.)
+
+Astro Version: v5 → v6.4
+  The first draft of the design doc specified Astro v5. I caught it with an
+  inline comment — "why not Astro 6.4 which is the latest?" — and it was
+  corrected. v6.4 gets us the rebuilt dev server (Vite Environment API), the
+  stable Fonts API for self-hosting, native CSP support, and live content
+  collections. Astro 7 Alpha was already in preview, but stable is stable.
+
+680px Content Column
+  benji.org uses 582px. jakub.kr uses 692px. glenn.me uses 640px. I split the
+  difference at 680px, which yields ~65-75 characters per line at 16px body
+  text. That's the sweet spot for reading comfort in a single-column layout.
+
+Package Manager: pnpm
+  Not npm. Not yarn. pnpm for speed, disk efficiency, and strict dependency
+  resolution. (I added this as a late sidenote — the initial implementation
+  plan used npm commands throughout. All were replaced with pnpm.)
+
+Execution Approach
+  The implementation plan had 8 tasks. I was given two options for execution:
+  (1) subagent-driven in the current session — dispatch a fresh subagent per
+  task, review between tasks, fast iteration; or (2) parallel session with
+  the executing-plans skill, batch execution with checkpoints. I chose
+  option 1 for tighter control and faster feedback loops.
+
+
+────────────────────────────────────────────────────────
+PHASE 2 — BUILDING IT (June 4-6, 2026)
+────────────────────────────────────────────────────────
+
+Scaffolding (June 4)
+  Astro minimal template. Installed Tailwind via @astrojs/tailwind. Self-hosted
+  all three fonts in public/fonts/. Created global.css with the full OKLCH
+  token system, @font-face declarations, and base resets.
+
+  Wrote Base.astro with a FOUC-preventing inline script that reads localStorage
+  before paint and sets data-theme. Every dark-mode site in the audit uses
+  this technique.
+
+  One non-obvious bug: the initial global.css had an unlayered universal
+  reset (* { box-sizing: border-box; margin: 0; padding: 0; }). Tailwind v4
+  already applies this inside @layer base via its preflight. Unlayered rules
+  win over layered ones in CSS, so the manual reset was overriding Tailwind
+  utilities like mx-auto and px-6. Removed the duplicate and added a comment
+  explaining why it must not come back.
+
+Component Library (June 4)
+  Nine components, each traceable to a specific reference site:
+    - Card.astro         → chester.how shadows + jakub.kr scale feedback
+    - Badge.astro        → chester.how .shadow-inset-skeuo, adapted for dark
+    - ProjectCard.astro  → Card extended with icon + title + description + badges
+    - WritingEntry.astro → perrera.com timeline connector pattern
+    - SectionHeader.astro → alexanderobenauer.com vertical labels, horizontalized
+    - Tag.astro          → benji.org "NEW" badge, generalized to Paper/Award/etc.
+    - Nav.astro          → Sticky bar, serif wordmark left, sans links right
+    - ThemeToggle.astro  → Sun/moon SVG toggle, localStorage persistence
+    - Footer.astro       → Social links with arrow micro-shift on hover
+
+Home Page Assembly (June 6)
+  Bio section with colored inline links. Featured projects as a 2-column card
+  grid. Recent writing pulled from the same content collection as /writing
+  (single source of truth — change a post's date and both pages update).
+
+  "Elsewhere" section with GitHub, Scholar, LinkedIn links. Later removed
+  (see Phase 3).
+
+Writing Page + Content Collections (June 6)
+  Year-grouped timeline. Content defined as Markdown files with frontmatter
+  (title, date, optional description, optional url for external links, optional
+  tags). Dynamic [...slug].astro routing for internal posts.
+
+  Initially used .mdx extension but Astro v6 requires the @astrojs/mdx
+  integration for that. Renamed to .md first, then later added MDX properly
+  when I wanted KaTeX math support.
+
+View Transitions (June 6)
+  Astro v6 renamed ViewTransitions to ClientRouter. Added to Base.astro head.
+  Immediate bug: the theme toggle stopped working after in-app navigation
+  because ClientRouter swaps the <body>, orphaning the button's click listener.
+  Fixed with document-level event delegation guarded by a window flag.
+
+  Second bug: post dates rendered as one day earlier than expected. "2025-06-01"
+  parsed as UTC midnight but was formatted in the build machine's local timezone
+  (PDT = UTC-7), so it displayed as "May '25". Fixed by formatting in UTC
+  explicitly.
+
+Favicon
+  Simple SVG — the letter "O" in Georgia serif. No complexity needed.
+
+
+────────────────────────────────────────────────────────
+PHASE 3 — REFINING (June 6-7, 2026)
+────────────────────────────────────────────────────────
+
+Tag System
+  The original WritingEntry only had a "NEW" badge (benji.org pattern). I
+  generalized this into a full Tag component with a color map:
+    Paper → sky, Award → lime, New → rose, Note → teal, Stealth → purple.
+  Each tag is a bordered pill in the decoration color. No filled backgrounds —
+  just border + text in the accent color. Keeps the monochrome feeling.
+
+Papers as Writing Entries
+  LOTUS, SynLexLM, and AI PI were originally listed as project cards. That felt
+  wrong — they're publications, not active projects. Moved them into the
+  Writing content collection as external entries (frontmatter url field links
+  out to arXiv/ISAM). Tagged with Paper and, for AI PI, Award.
+
+  This change also removed the /projects route entirely. Projects section now
+  lives only on the home page, scoped to current/ongoing work (Shard v2 + a
+  stealth project placeholder). Navigation simplified to just "Writing".
+
+Dropping "Elsewhere"
+  The Elsewhere section (GitHub, Scholar, LinkedIn) felt redundant given the
+  footer already has the same links. Removed it to tighten the home page.
+
+Trimming the Colophon
+  Footer originally said "Built with Astro. Set in Instrument Serif, Geist &
+  Ioskeley Mono." Felt like showing off the tools. Trimmed to essentials.
+
+chester.how Hover Effects on Text
+  User feedback asked me to look at chester.how's text hover effects
+  specifically. The colored underlines that shift opacity on hover — I'd already
+  implemented the pattern but this nudge confirmed the direction.
+
+Color Direction: "Dark grays / browns as primary accent"
+  Early iteration had more saturated decoration colors appearing in UI chrome.
+  User feedback steered toward using dark grays and browns as the structural
+  palette, with colors reserved for decoration only. This is the "no primary
+  accent" philosophy described above.
+
+H1 Font Size: 1.875rem → 3.75rem
+  The original heading size (1.875rem / 30px) felt too modest for a personal
+  site hero. Doubled it to 3.75rem (60px) for a bolder serif statement.
+  Tightened line-height from 1.3 to 1.1 to maintain visual cohesion at the
+  larger size.
+
+
+────────────────────────────────────────────────────────
+PHASE 4 — MDX, MATH, AND DIAGRAMS (June 6, 2026)
+────────────────────────────────────────────────────────
+
+Added @astrojs/mdx for JSX-in-Markdown support. Integrated:
+  - KaTeX for math typesetting (rendered to static HTML at build time, no
+    client JS). Because some of my writing involves ML math.
+  - Mermaid for diagrams (client-rendered, lazy-loaded only on pages that
+    contain a ```mermaid block). Uses a custom rehype plugin
+    (rehype-mermaid-pre.mjs) that converts mermaid code blocks into
+    <pre class="mermaid"> elements for the Mermaid runtime to pick up.
+
+
+────────────────────────────────────────────────────────
+PHASE 5 — DEPLOYMENT AND FIXES (June 7-9, 2026)
+────────────────────────────────────────────────────────
+
+GitHub Pages
+  Configured .github/workflows/deploy.yml for automatic deployment on push
+  to main. Key gotcha: GitHub Pages source must be set to "GitHub Actions"
+  (not "Deploy from a branch"), or GitHub's legacy Jekyll builder tries to
+  parse .astro files as YAML and fails.
+
+Custom Domain
+  Canonical domain is ojasw.dev (apex). DNS A records point to GitHub's IPs.
+  CNAME file in public/ set to ojasw.dev. Initially set www.ojasw.dev, then
+  corrected to apex.
+
+Font Fix (June 9)
+  The Instrument Serif WOFF2 downloaded via curl from Google's CDN turned out
+  to be a 99-byte error response, not a real font file. Every heading was
+  rendering in fallback Georgia. Manually downloaded the correct WOFF2 from
+  fonts.google.com and replaced it. The site finally looked like it was
+  supposed to.
+
+
+────────────────────────────────────────────────────────
+PHASE 6 — CONTENT UPDATES (June 11-13, 2026)
+────────────────────────────────────────────────────────
+
+Shard v2 Description Update (June 11)
+  Rewrote the Shard v2 project description from a generic "AI-powered desktop
+  assistant" to the real technical details: 5-tier memory system, autonomous
+  tool calling, multimodal vision, multi-provider LLM fallback, deep research
+  mode, persona loading. The card now actually tells you what the project does.
+
+README Simplification (June 13)
+  The README was developer-facing — project structure, commands table, content
+  authoring guide, deployment instructions. Rewrote it as a concise
+  introduction to the website itself. Developer documentation now lives in
+  docs/walkthrough.md where it belongs.
+
+
+────────────────────────────────────────────────────────
+THINGS I STILL THINK ABOUT
+────────────────────────────────────────────────────────
+
+- The Ioskeley Mono font files are .ttf (TrueType), not .woff2. They work but
+  they're larger than they need to be. Should convert to WOFF2 for the size win.
+
+- The Vite build warns about a chunk > 500KB (the Mermaid library). Since it's
+  lazy-loaded only on pages with diagrams, this is acceptable but not ideal.
+  Could explore dynamic import splitting.
+
+- Light mode exists and works but I've spent 95% of my time looking at the
+  dark theme. The light mode deserves a dedicated visual pass.
+
+- No RSS feed yet. Should add one for the writing collection.
+
+- No OG images. Should generate them for social sharing previews.
+
+- The "Stealth Project" card is a placeholder. It'll get real content when
+  I'm ready to announce.
+
+
+────────────────────────────────────────────────────────
+LIGHTHOUSE SCORES (as of June 7, 2026)
+────────────────────────────────────────────────────────
+
+  Performance:     100
+  Accessibility:    92
+  Best Practices:  100
+  SEO:             100
+
+The accessibility gap is likely contrast ratios on the muted text tokens.
+Worth investigating.
