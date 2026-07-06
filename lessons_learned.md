@@ -12,4 +12,5 @@ Date,"Context","Mistake/Finding","Lesson/Action Item"
 2026-06-06,"Increasing main heading visual hierarchy","Larger serif headers require tighter line-height to maintain typographic cohesion","Adjust line-height to 1.1 alongside font-size 3.75rem for large serif h1 tags"
 2026-06-11,"Updating structured project data","Content changes in src/data/projects.ts automatically propagate to all pages referencing the data module","Keep all project metadata structured in a single data module to simplify sitewide updates"
 2026-06-13,"README simplification","Project entrypoint README files should serve as concise user-facing overviews, delegating technical setup instructions to scoped docs folders","Refactor developer documentation out of main README into sub-directories to align project presentation with standard practices"
+2026-07-05,"Embedding YouTube iframe in markdown/prose","Raw iframe embeds with fixed dimensions overflow on mobile viewports","Wrap iframe in a container with aspect-ratio: 16/9, width: 100%, position: relative, and style child iframe with absolute positioning to guarantee mobile-responsive scaling"
 ```
