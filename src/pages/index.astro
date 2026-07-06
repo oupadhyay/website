@@ -8,9 +8,9 @@ import Footer from '../components/Footer.astro';
 import { projects } from '../data/projects';
 import { getCollection } from 'astro:content';
 
-// Pull writing/papers from the same content collection the /writing page uses,
+// Pull thoughts/papers from the same content collection the /thoughts page uses,
 // so both views stay consistent. Show the most recent few here.
-const recentWriting = (await getCollection('writing'))
+const recentThoughts = (await getCollection('thoughts'))
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
   .slice(0, 4);
 
@@ -56,15 +56,15 @@ function formatDate(dateStr: string): string {
     </div>
   </section>
 
-  <!-- Writing -->
+  <!-- Thoughts -->
   <section style="margin-top: var(--section-gap)">
-    <SectionHeader label="Writing" />
+    <SectionHeader label="Thoughts" />
     <div>
-      {recentWriting.map(post => (
+      {recentThoughts.map(post => (
         <WritingEntry
           title={post.data.title}
           date={formatDate(post.data.date)}
-          href={post.data.url ?? `/writing/${post.id}`}
+          href={post.data.url ?? `/thoughts/${post.id}`}
           external={!!post.data.url}
           tags={post.data.tags ?? []}
           tagTooltips={post.data.tagTooltips ?? {}}

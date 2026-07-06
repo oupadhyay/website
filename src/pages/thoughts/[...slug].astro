@@ -1,12 +1,12 @@
 ---
-// [...slug].astro — Dynamic route for individual writing posts.
+// [...slug].astro — Dynamic route for individual thoughts posts.
 // Renders MDX content within the Post layout.
 import { getCollection, render } from 'astro:content';
 import Post from '../../layouts/Post.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('writing');
-  // External entries (papers with a `url`) link out — no internal page.
+  const posts = await getCollection('thoughts');
+  // External entries (papers with a `url`) link out — no internal /thoughts/<slug> page.
   return posts
     .filter(post => !post.data.url)
     .map(post => ({

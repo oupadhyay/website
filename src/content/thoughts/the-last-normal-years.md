@@ -2,7 +2,7 @@
 title: "The Last Normal Years: Software, AGI, and What Comes After"
 date: "2026-06-30"
 description: "Walking through what the AI forecasts are actually claiming, what the legitimate counterarguments are, and what any of us can do with this information."
-tags: ["Essay", "New"]
+tags: ["Essay"]
 ---
 
 There is a specific feeling I've started noticing when I read about AI forecasts. It isn't panic. It isn't excitement either. It's something closer to what you feel when weather alerts start stacking up on your phone – each one individually manageable, but the accumulation of them forcing you to reckon with the fact that something is genuinely coming.
