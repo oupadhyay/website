@@ -5,6 +5,8 @@
 //   Award    → purple  (special; shows a tooltip on hover/focus)
 //   Colophon → sky     (site notes / meta)
 //   New      → rose
+//   Music    → lime
+//   Essay    → orange
 // Pass an explicit `color` and/or `tooltip` to override the defaults.
 interface Props {
   label: string;
@@ -28,6 +30,9 @@ const colorMap: Record<string, string> = {
 const tooltipMap: Record<string, string> = {
   award: 'ISAM 2025 Honorable Mention',
   colophon: 'A note on how this website was made',
+  music: 'Pleasant sounds',
+  new: 'The latest and greatest',
+  essay: 'Thinking in paragraphs',
 };
 
 const key = label.toLowerCase();
