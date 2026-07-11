@@ -5,7 +5,7 @@ The personal website and digital garden of Ojasw Upadhyay.
 Built as a static, performance-focused space to document projects and share writing at the intersection of systems engineering, machine learning, and interface design.
 
 ## Architecture & Design
-- **Engine**: Built with [Astro v6](https://astro.build) and [Tailwind CSS v4](https://tailwindcss.com).
+- **Engine**: Built with [Astro v7](https://astro.build) and [Tailwind CSS v4](https://tailwindcss.com).
 - **Aesthetics**: Monochromatic OKLCH design language with hover-reactive color link accents.
 - **Typography**: Set in Instrument Serif, Geist, and Ioskeley Mono.
 - **Performance**: Ships zero client-side JavaScript by default (excluding the dark mode toggle), achieving a perfect 100 Lighthouse score.

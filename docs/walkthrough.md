@@ -1,7 +1,7 @@
 # Website Walkthrough
 
 Ojasw Upadhyay's personal website — a static, dark-mode-first digital garden built
-with **Astro v6.4** and **Tailwind CSS v4**. Ships zero JS except a ~1KB theme-toggle
+with **Astro v7** and **Tailwind CSS v4**. Ships zero JS except a ~1KB theme-toggle
 island and Astro's view-transition router.
 
 ## Pages
