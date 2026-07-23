@@ -31,5 +31,10 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // Mermaid's parser is one indivisible ~594 kB generated module. It is
+      // already lazy-loaded only on pages containing a Mermaid diagram.
+      chunkSizeWarningLimit: 600,
+    },
   },
 });
