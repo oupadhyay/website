@@ -1,6 +1,7 @@
 // @ts-check
 // astro.config.mjs — Astro v6.4 configuration for ojasw.dev
 import { defineConfig } from 'astro/config';
+import { unified } from '@astrojs/markdown-remark';
 import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import remarkMath from 'remark-math';
@@ -14,13 +15,18 @@ export default defineConfig({
     // Skip Shiki highlighting for mermaid blocks so rehype-mermaid can
     // transform them into client-rendered diagrams.
     syntaxHighlight: { type: 'shiki', excludeLangs: ['mermaid'] },
-    remarkPlugins: [remarkMath],
-    rehypePlugins: [
-      rehypeKatex,
-      // Rewrites mermaid code blocks to <pre class="mermaid"> for client-side
-      // rendering — no headless browser needed at build time.
-      rehypeMermaidPre,
-    ],
+    // Markdown pipeline plugins live on the unified processor since Astro 6.4;
+    // the top-level markdown.remarkPlugins/rehypePlugins options are deprecated
+    // (removed in Astro 8) now that the processor itself is pluggable.
+    processor: unified({
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [
+        rehypeKatex,
+        // Rewrites mermaid code blocks to <pre class="mermaid"> for client-side
+        // rendering — no headless browser needed at build time.
+        rehypeMermaidPre,
+      ],
+    }),
   },
   vite: {
     plugins: [tailwindcss()],
