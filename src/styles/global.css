@@ -27,15 +27,17 @@
 }
 @font-face {
   font-family: 'Ioskeley Mono';
-  src: url('/fonts/ioskeley-mono-regular.ttf') format('truetype');
+  src: url('/fonts/ioskeley-mono-regular.woff2') format('woff2');
   font-weight: 400;
   font-display: swap;
+  unicode-range: U+0000-024F, U+2000-206F, U+20A0-20CF, U+2100-214F, U+2190-22FF, U+2200-22FF, U+2500-257F, U+25A0-27BF;
 }
 @font-face {
   font-family: 'Ioskeley Mono';
-  src: url('/fonts/ioskeley-mono-bold.ttf') format('truetype');
+  src: url('/fonts/ioskeley-mono-bold.woff2') format('woff2');
   font-weight: 700;
   font-display: swap;
+  unicode-range: U+0000-024F, U+2000-206F, U+20A0-20CF, U+2100-214F, U+2190-22FF, U+2200-22FF, U+2500-257F, U+25A0-27BF;
 }
 
 /* --- OKLCH Color Tokens --- */
