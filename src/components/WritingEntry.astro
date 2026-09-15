@@ -80,4 +80,34 @@ const extraProps = external ? { target: '_blank', rel: 'noopener noreferrer' } :
     color: var(--color-text-muted);
     white-space: nowrap;
   }
+
+  @media (max-width: 600px) {
+    .writing-entry {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.35rem 0.75rem;
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-radius: 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .entry-title {
+      grid-column: 1 / -1;
+      line-height: 1.45;
+    }
+
+    .entry-connector {
+      display: none;
+    }
+
+    .entry-tags {
+      grid-column: 1;
+    }
+
+    .entry-date {
+      grid-column: 2;
+      text-align: right;
+    }
+  }
 </style>

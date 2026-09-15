@@ -31,6 +31,10 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    preview: {
+      // Amp portals use per-thread subdomains to expose this local preview.
+      allowedHosts: ['.onamp.dev'],
+    },
     build: {
       // Mermaid's parser is one indivisible ~594 kB generated module. It is
       // already lazy-loaded only on pages containing a Mermaid diagram.

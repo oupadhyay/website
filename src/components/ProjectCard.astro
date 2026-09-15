@@ -1,43 +1,389 @@
 ---
-// ProjectCard.astro — Project entry: title + description + muted tech stack line.
-import Card from './Card.astro';
+// ProjectCard.astro — Project entry with a bounded, theme-aware visual field.
 
 interface Props {
   title: string;
   description: string;
   href?: string;
   tags?: string[];
+  visual: 'point-cloud' | 'orbit';
+  index: number;
+  total: number;
 }
-const { title, description, href, tags = [] } = Astro.props;
+const { title, description, href, tags = [], visual, index, total } = Astro.props;
+const Element = href ? 'a' : 'article';
 ---
-<Card href={href}>
-  <h3 class="project-title">{title}</h3>
-  <p class="project-desc">{description}</p>
-  {tags.length > 0 && (
-    <p class="project-stack">{tags.join(' · ')}</p>
+<Element class="project-card" href={href}>
+  <span class="project-count">{String(index).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
+  <div class="project-copy">
+    <h3 class="project-title">{title}</h3>
+    <p class="project-desc">{description}</p>
+    {tags.length > 0 && (
+      <p class="project-stack">{tags.join(' · ')}</p>
+    )}
+  </div>
+
+  {visual === 'point-cloud' ? (
+    <div class="project-visual point-cloud" aria-hidden="true">
+      <canvas data-point-cloud></canvas>
+    </div>
+  ) : (
+    <div class="project-visual orbit-visual" aria-hidden="true">
+      <svg viewBox="0 0 260 220" role="presentation">
+        <circle class="orbit orbit-left" cx="105" cy="110" r="62" />
+        <circle class="orbit orbit-right" cx="155" cy="110" r="62" />
+        <path class="orbit-plus" d="M130 103v14M123 110h14" />
+      </svg>
+    </div>
   )}
-</Card>
+</Element>
 
 <style>
+  .project-card {
+    position: relative;
+    display: flex;
+    min-height: 29rem;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color 200ms ease,
+      background-color 200ms ease;
+  }
+
+  a.project-card:hover,
+  a.project-card:focus-visible {
+    border-color: var(--color-border-hover);
+    background: var(--color-surface-1);
+  }
+
+  a.project-card:focus-visible {
+    outline: 2px solid var(--color-text-primary);
+    outline-offset: 3px;
+  }
+
+  .project-copy {
+    position: relative;
+    z-index: 1;
+    padding: 1.5rem 1.5rem 0;
+  }
+
+  .project-count {
+    position: absolute;
+    z-index: 2;
+    top: 1.35rem;
+    right: 1.5rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+  }
+
   .project-title {
-    font-family: var(--font-sans);
-    font-weight: 500;
-    font-size: 1.25rem;
-    line-height: 1.6;
-    letter-spacing: -0.01em;
+    max-width: calc(100% - 4rem);
+    margin-bottom: 0.5rem;
     color: var(--color-text-primary);
-    margin-bottom: 0.25rem;
+    font-family: var(--font-serif);
+    font-size: clamp(2.25rem, 4vw, 3rem);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 0.95;
   }
+
   .project-desc {
-    font-size: 0.875rem;
-    color: var(--color-text-secondary);
-    line-height: 1.5;
+    max-width: 34rem;
     margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
   }
+
   .project-stack {
+    color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: 0.75rem;
     letter-spacing: 0.02em;
-    color: var(--color-text-muted);
+  }
+
+  .project-visual {
+    position: relative;
+    min-height: 15rem;
+    flex: 1;
+    margin-top: 0.75rem;
+    overflow: hidden;
+  }
+
+  .point-cloud canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .orbit-visual {
+    display: grid;
+    place-items: center;
+  }
+
+  .orbit-visual svg {
+    width: min(88%, 17rem);
+    overflow: visible;
+  }
+
+  .orbit {
+    fill: none;
+    stroke: var(--color-text-muted);
+    stroke-dasharray: 2 5;
+    stroke-linecap: round;
+    stroke-width: 1.25;
+    transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .orbit-left {
+    transform-origin: 105px 110px;
+  }
+
+  .orbit-right {
+    transform-origin: 155px 110px;
+  }
+
+  .project-card:hover .orbit-left {
+    transform: translateX(-4px);
+  }
+
+  .project-card:hover .orbit-right {
+    transform: translateX(4px);
+  }
+
+  .orbit-plus {
+    fill: none;
+    stroke: var(--color-text-primary);
+    stroke-linecap: round;
+    stroke-width: 1.5;
+  }
+
+  @media (max-width: 700px) {
+    .project-card {
+      min-height: 25rem;
+    }
+
+    .project-visual {
+      min-height: 13rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orbit {
+      transform: none !important;
+    }
   }
 </style>
+
+<script>
+  const setupPointClouds = () => {
+    document.querySelectorAll<HTMLCanvasElement>('canvas[data-point-cloud]').forEach((canvas) => {
+      if (canvas.dataset.ready) return;
+      canvas.dataset.ready = 'true';
+
+      const context = canvas.getContext('2d');
+      if (!context) return;
+
+      const host = canvas.parentElement;
+      if (!host) return;
+      const interactiveSurface = host.closest<HTMLElement>('.project-card') ?? host;
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const systemLight = window.matchMedia('(prefers-color-scheme: light)');
+      const canHover = window.matchMedia('(hover: hover)');
+      let width = 0;
+      let height = 0;
+      let visible = true;
+      let engaged = false;
+      let elapsed = 0;
+      let lastFrame = 0;
+      let pointerX = 0;
+      let pointerY = 0;
+      let targetX = 0;
+      let targetY = 0;
+      let animationFrame = 0;
+      const controller = new AbortController();
+
+      const points = Array.from({ length: 24 }, (_, ring) =>
+        Array.from({ length: 40 }, (_, step) => ({
+          ring,
+          step,
+          offset: Math.sin(ring * 12.71 + step * 4.17) * 0.9,
+        })),
+      ).flat();
+
+      const isLight = () => {
+        const explicit = document.documentElement.getAttribute('data-theme');
+        return explicit ? explicit === 'light' : systemLight.matches;
+      };
+
+      const resize = () => {
+        const rect = canvas.getBoundingClientRect();
+        const scale = Math.min(window.devicePixelRatio || 1, 2);
+        width = rect.width;
+        height = rect.height;
+        canvas.width = Math.round(width * scale);
+        canvas.height = Math.round(height * scale);
+        context.setTransform(scale, 0, 0, scale, 0, 0);
+        draw();
+      };
+
+      const draw = () => {
+        context.clearRect(0, 0, width, height);
+        const light = isLight();
+        const phase = elapsed * (Math.PI * 2 / 14);
+        pointerX += (targetX - pointerX) * 0.035;
+        pointerY += (targetY - pointerY) * 0.035;
+
+        const centerX = width * 0.5 + pointerX * 4;
+        const centerY = height * 0.56 + pointerY * 3;
+        const scaleX = Math.max(1, Math.min(width / 340, 1.7));
+        const scaleY = Math.min(height / 200, 1.4);
+
+        for (const point of points) {
+          const radial = point.ring / 23;
+          const theta = (point.step / 40) * Math.PI * 2 + radial * 0.48;
+          const radius = 24 + radial * 160;
+          const wave = Math.sin(theta * 2.15 + radial * 10 - phase) * (6 + radial * 16);
+          const crossWave = Math.sin(radial * 20 - phase * 1.6 + Math.cos(theta) * 1.4) * 5 * (0.35 + radial);
+          const fold = Math.exp(-Math.pow(radial - 0.48, 2) / 0.025) * Math.cos(theta) * 18 * (0.9 + Math.sin(phase) * 0.1);
+          const x = Math.cos(theta) * radius;
+          const depth = Math.sin(theta) * radius;
+          const y = depth * 0.46 + wave + crossWave + fold + point.offset;
+          const perspective = 0.88 + (depth / 330);
+          const px = centerX + x * scaleX * perspective;
+          const py = centerY + y * scaleY;
+          const alpha = (light ? 0.23 : 0.19) + (1 - radial) * 0.23 + Math.max(depth, 0) / 900;
+          const size = (light ? 1.05 : 0.95) + Math.max(depth, 0) / 300;
+
+          context.fillStyle = light
+            ? `rgba(25, 27, 31, ${Math.min(alpha, 0.62)})`
+            : `rgba(235, 233, 224, ${Math.min(alpha, 0.58)})`;
+          context.beginPath();
+          context.arc(px, py, size, 0, Math.PI * 2);
+          context.fill();
+        }
+
+        const accents = [
+          ['#13a875', 0.19, 0.46],
+          ['#00a7bf', 0.46, 0.72],
+          ['#d69b00', 0.61, 0.15],
+          ['#8658d6', 0.80, 0.88],
+        ] as const;
+
+        accents.forEach(([color, radial, turn]) => {
+          const theta = turn * Math.PI * 2;
+          const radius = 24 + radial * 160;
+          const depth = Math.sin(theta) * radius;
+          const wave = Math.sin(theta * 2.15 + radial * 10 - phase) * (6 + radial * 16);
+          const crossWave = Math.sin(radial * 20 - phase * 1.6 + Math.cos(theta) * 1.4) * 5 * (0.35 + radial);
+          const fold = Math.exp(-Math.pow(radial - 0.48, 2) / 0.025) * Math.cos(theta) * 18 * (0.9 + Math.sin(phase) * 0.1);
+          const perspective = 0.88 + (depth / 330);
+          const px = centerX + Math.cos(theta) * radius * scaleX * perspective;
+          const py = centerY + (depth * 0.46 + wave + crossWave + fold) * scaleY;
+          context.fillStyle = color;
+          context.beginPath();
+          context.arc(px, py, 2.5, 0, Math.PI * 2);
+          context.fill();
+        });
+      };
+
+      const animate = (now: number) => {
+        animationFrame = 0;
+        if (!canvas.isConnected) {
+          resizeObserver.disconnect();
+          intersectionObserver.disconnect();
+          themeObserver.disconnect();
+          systemLight.removeEventListener('change', handleMediaChange);
+          reduceMotion.removeEventListener('change', handleMediaChange);
+          controller.abort();
+          return;
+        }
+        if (!visible || !engaged || reduceMotion.matches || document.hidden) return;
+        if (lastFrame) elapsed += Math.min((now - lastFrame) / 1000, 0.05);
+        lastFrame = now;
+        draw();
+        animationFrame = requestAnimationFrame(animate);
+      };
+
+      const startAnimation = () => {
+        if (!animationFrame && visible && engaged && !reduceMotion.matches && !document.hidden) {
+          lastFrame = performance.now();
+          animationFrame = requestAnimationFrame(animate);
+        }
+      };
+
+      const stopAnimation = () => {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = 0;
+        lastFrame = 0;
+      };
+
+      const handleMediaChange = () => {
+        resize();
+        if (reduceMotion.matches) stopAnimation();
+        else if (engaged) startAnimation();
+      };
+
+      const resizeObserver = new ResizeObserver(resize);
+      const intersectionObserver = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible && engaged) startAnimation();
+        else stopAnimation();
+      }, { rootMargin: '100px' });
+      const themeObserver = new MutationObserver(draw);
+
+      host.addEventListener('pointermove', (event) => {
+        if (!canHover.matches) return;
+        const rect = host.getBoundingClientRect();
+        targetX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+        targetY = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+      }, { signal: controller.signal });
+      interactiveSurface.addEventListener('pointerenter', () => {
+        if (!canHover.matches) return;
+        engaged = true;
+        startAnimation();
+      }, { signal: controller.signal });
+      interactiveSurface.addEventListener('pointerleave', () => {
+        if (!canHover.matches) return;
+        engaged = false;
+        targetX = 0;
+        targetY = 0;
+        pointerX = 0;
+        pointerY = 0;
+        stopAnimation();
+        draw();
+      }, { signal: controller.signal });
+      interactiveSurface.addEventListener('focusin', () => {
+        engaged = true;
+        startAnimation();
+      }, { signal: controller.signal });
+      interactiveSurface.addEventListener('focusout', () => {
+        engaged = false;
+        stopAnimation();
+        draw();
+      }, { signal: controller.signal });
+
+      resizeObserver.observe(canvas);
+      intersectionObserver.observe(canvas);
+      themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      systemLight.addEventListener('change', handleMediaChange);
+      reduceMotion.addEventListener('change', handleMediaChange);
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stopAnimation();
+        else if (engaged) startAnimation();
+      }, { signal: controller.signal });
+      resize();
+    });
+  };
+
+  setupPointClouds();
+  document.addEventListener('astro:page-load', setupPointClouds);
+</script>

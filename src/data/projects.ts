@@ -5,6 +5,7 @@ export interface Project {
   title: string;
   description: string;
   tags: string[];
+  visual: 'point-cloud' | 'orbit';
   href?: string;
   year: number;
 }
@@ -15,6 +16,7 @@ export const projects: Project[] = [
     description:
       'Privacy-first AI desktop assistant with tiered memory, autonomous tool calling, and multimodal vision — built natively in Rust.',
     tags: ['Rust', 'Tauri', 'TypeScript'],
+    visual: 'point-cloud',
     href: 'https://github.com/oupadhyay/shard-v2',
     year: 2024,
   },
@@ -22,6 +24,7 @@ export const projects: Project[] = [
     title: 'Stealth Project',
     description: 'Something new in the works. Details coming soon.',
     tags: [],
+    visual: 'orbit',
     year: 2026,
   },
 ];
