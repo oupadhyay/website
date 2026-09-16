@@ -21,7 +21,7 @@ export const projects: Project[] = [
     year: 2024,
   },
   {
-    title: 'Stealth Project',
+    title: 'Stealth',
     description: 'Something new in the works. Details coming soon.',
     tags: [],
     visual: 'orbit',
