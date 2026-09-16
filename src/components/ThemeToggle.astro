@@ -59,7 +59,8 @@
       const target = e.target as HTMLElement | null;
       if (!target?.closest('#theme-toggle')) return;
       const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'light' ? 'dark' : 'light';
+      const resolved = current ?? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      const next = resolved === 'light' ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
     });
