@@ -22,7 +22,7 @@ export const projects: Project[] = [
   },
   {
     title: 'Stealth',
-    description: 'Something new in the works. Details coming soon.',
+    description: 'Details coming when ready.',
     tags: [],
     visual: 'orbit',
     year: 2026,
