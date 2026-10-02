@@ -168,10 +168,11 @@ const Element = href ? 'a' : 'article';
 
   .orbit {
     fill: none;
-    stroke: var(--color-border);
+    stroke: var(--color-text-muted);
     stroke-dasharray: 2 5;
     stroke-linecap: round;
     stroke-width: 1.25;
+    opacity: 0.75;
     transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
@@ -205,7 +206,7 @@ const Element = href ? 'a' : 'article';
   }
 
   .trace-visual svg {
-    width: min(100%, 18rem);
+    width: min(100%, 26rem);
     max-height: 8rem;
   }
 
@@ -215,16 +216,32 @@ const Element = href ? 'a' : 'article';
     stroke-dasharray: 0.1 6;
     stroke-linecap: round;
     stroke-width: 1.8;
-    opacity: 0.65;
+    opacity: 0.8;
+    animation: trace-flow 12s linear infinite;
+    animation-play-state: paused;
   }
 
   .trace-path + .trace-path {
-    opacity: 0.4;
+    opacity: 0.6;
+    animation-direction: reverse;
+  }
+
+  @media (hover: hover) {
+    .project-card:hover .trace-path {
+      animation-play-state: running;
+    }
+  }
+
+  @keyframes trace-flow {
+    to {
+      /* Eight dash periods keep the circulation seamless. */
+      stroke-dashoffset: -48.8;
+    }
   }
 
   .trace-points {
     fill: var(--color-text-muted);
-    opacity: 0.5;
+    opacity: 0.6;
   }
 
   .trace-junction {
@@ -249,6 +266,10 @@ const Element = href ? 'a' : 'article';
   @media (prefers-reduced-motion: reduce) {
     .orbit {
       transform: none !important;
+    }
+
+    .trace-path {
+      animation: none;
     }
   }
 </style>
