@@ -4,19 +4,21 @@
 interface Props {
   title: string;
   description: string;
+  status?: string;
   href?: string;
   tags?: string[];
-  visual: 'point-cloud' | 'orbit';
+  visual: 'point-cloud' | 'orbit' | 'trace';
   index: number;
   total: number;
 }
-const { title, description, href, tags = [], visual, index, total } = Astro.props;
+const { title, description, status, href, tags = [], visual, index, total } = Astro.props;
 const Element = href ? 'a' : 'article';
 ---
 <Element class="project-card" href={href}>
   <span class="project-count">{String(index).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
   <div class="project-copy">
     <h3 class="project-title">{title}</h3>
+    {status && <p class="project-status">{status}</p>}
     <p class="project-desc">{description}</p>
     {tags.length > 0 && (
       <p class="project-stack">{tags.join(' · ')}</p>
@@ -27,12 +29,30 @@ const Element = href ? 'a' : 'article';
     <div class="project-visual point-cloud" aria-hidden="true">
       <canvas data-point-cloud></canvas>
     </div>
-  ) : (
+  ) : visual === 'orbit' ? (
     <div class="project-visual orbit-visual" aria-hidden="true">
       <svg viewBox="0 0 260 220" role="presentation">
         <circle class="orbit orbit-left" cx="105" cy="110" r="62" />
         <circle class="orbit orbit-right" cx="155" cy="110" r="62" />
         <path class="orbit-plus" d="M130 103v14M123 110h14" />
+      </svg>
+    </div>
+  ) : (
+    <div class="project-visual trace-visual" aria-hidden="true">
+      <svg viewBox="0 0 300 160" role="presentation">
+        <g class="trace-points">
+          <circle cx="24" cy="59" r="1.25" />
+          <circle cx="72" cy="24" r="1.5" />
+          <circle cx="188" cy="16" r="1.25" />
+          <circle cx="274" cy="130" r="1.5" />
+          <circle cx="171" cy="140" r="1.25" />
+          <circle cx="105" cy="147" r="1.25" />
+          <circle cx="204" cy="77" r="1.5" />
+          <circle cx="82" cy="100" r="1.25" />
+        </g>
+        <path class="trace-path" d="M134 84C106 56 70 44 48 72C16 114 37 150 84 130C129 112 156 41 191 30C244 10 277 58 259 96C242 137 171 116 134 84Z" />
+        <path class="trace-path" d="M134 84C95 59 48 72 43 103C38 132 87 134 116 105C144 77 155 34 188 42C230 36 263 68 263 97C259 122 187 117 134 84Z" />
+        <circle class="trace-junction" cx="134" cy="84" r="2.75" />
       </svg>
     </div>
   )}
@@ -42,7 +62,7 @@ const Element = href ? 'a' : 'article';
   .project-card {
     position: relative;
     display: flex;
-    min-height: 29rem;
+    min-height: 17.5rem;
     flex-direction: column;
     overflow: hidden;
     border: 1px solid var(--color-border);
@@ -93,6 +113,14 @@ const Element = href ? 'a' : 'article';
     line-height: 1;
   }
 
+  .project-status {
+    margin-bottom: 0.75rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+  }
+
   .project-desc {
     max-width: 34rem;
     margin-bottom: 0.75rem;
@@ -110,10 +138,14 @@ const Element = href ? 'a' : 'article';
 
   .project-visual {
     position: relative;
-    min-height: 15rem;
+    min-height: 9rem;
     flex: 1;
     margin-top: 0.75rem;
     overflow: hidden;
+  }
+
+  .point-cloud {
+    min-height: 15rem;
   }
 
   .point-cloud canvas {
@@ -130,6 +162,7 @@ const Element = href ? 'a' : 'article';
 
   .orbit-visual svg {
     width: min(88%, 17rem);
+    max-height: 9rem;
     overflow: visible;
   }
 
@@ -165,6 +198,39 @@ const Element = href ? 'a' : 'article';
     stroke-width: 1.5;
   }
 
+  .trace-visual {
+    display: grid;
+    place-items: center;
+    padding: 0 1rem 1rem;
+  }
+
+  .trace-visual svg {
+    width: min(100%, 18rem);
+    max-height: 8rem;
+  }
+
+  .trace-path {
+    fill: none;
+    stroke: var(--color-text-muted);
+    stroke-dasharray: 0.1 6;
+    stroke-linecap: round;
+    stroke-width: 1.8;
+    opacity: 0.65;
+  }
+
+  .trace-path + .trace-path {
+    opacity: 0.4;
+  }
+
+  .trace-points {
+    fill: var(--color-text-muted);
+    opacity: 0.5;
+  }
+
+  .trace-junction {
+    fill: var(--deco-yellow);
+  }
+
   @media (max-width: 700px) {
     .project-card {
       min-height: 25rem;
@@ -172,6 +238,11 @@ const Element = href ? 'a' : 'article';
 
     .project-visual {
       min-height: 13rem;
+    }
+
+    .orbit-visual svg,
+    .trace-visual svg {
+      max-height: none;
     }
   }
 
