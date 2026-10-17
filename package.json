@@ -17,7 +17,7 @@
     "@astrojs/mdx": "^7.0.8",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^7.3.5",
-    "katex": "^0.17.0",
+    "katex": "^0.18.2",
     "mermaid": "^11.16.1",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
